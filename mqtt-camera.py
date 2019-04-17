@@ -6,19 +6,12 @@ import paho.mqtt.client as mqtt
 
 broker="192.168.0.109"
 terminate=""
-# raw_camera_start_command="screen -X -S omx stuff '''^C''' >/dev/null 2>&1; sleep 2; screen -X -S omx stuff \'\\nexit\\n\' >/dev/null 2>&1; screen -dmS omx bash -c \'/root/omx_front_door.sh\' >/dev/null 2>&1"
-# camera_stop_command="screen -X -S omx stuff '^C' >/dev/null 2>&1; sleep 2; screen -X -S omx stuff '\\nexit\\n' >/dev/null 2>&1"
 
-# camera_start_command = shlex.split(raw_camera_start_command)
-# print(camera_start_command)
-# camera_start_command = ['/bin/bash', '/root/omx_front_door.sh']
 camera_start_command = ['/bin/bash', 'start_helper.sh']
 camera_stop_command = ['/bin/bash', 'stop_helper.sh']
 
 sub_topics = {
-    "start" : "pi-white/camera/start",
-    "stop" : "pi-white/camera/stop",
-    "terminate" : "pi-white/camera/terminate"
+    "start" : "pi-white/camera/#",
 }
 pub_topics = {
     "status" : "pi-white/camera/status"
@@ -83,10 +76,10 @@ for sub, topic in sub_topics.items():
     print(f"Subscribing to {topic}")
     client.subscribe(topic)
 
-client.publish(pub_topics["status"], "script started")
+client.publish(pub_topics["status"], "Script started")
 
 while terminate != "True":
     time.sleep(3)
 
-client.publish(pub_topics["status"], "script terminated")
+client.publish(pub_topics["status"], "Script terminated")
 sys.exit()
